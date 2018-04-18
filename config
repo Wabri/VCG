@@ -1,0 +1,1 @@
+rm -rf VCG/bin ; mkdir VCG/bin

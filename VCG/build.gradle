@@ -1,0 +1,21 @@
+plugins {
+	id 'cpp'
+}
+
+model {
+  components {
+    main(NativeExecutableSpec) {
+      sources {
+        cpp {
+          source {
+            srcDir "src/main/cpp"
+          }
+        }
+      }
+    }
+  }
+}
+
+task  wrapper(type: Wrapper) {
+    gradleVersion = '4.6'
+}
