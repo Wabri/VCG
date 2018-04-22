@@ -71,7 +71,6 @@ int main(int argc, char **argv) {
 		alphabethString.~basic_string();
 		delete index;
 		cout << "### How many character must have a single element of output string? ###" << endl;
-
 	}
 	return 0;
 }
