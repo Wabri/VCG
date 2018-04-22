@@ -88,7 +88,7 @@ int main(int argc, char **argv) {
 		string output;
 		for (int var = 0; var < numberOfElements; ++var) {
 			for (int rip = 0; rip < numberOfCharacters; ++rip) {
-				output += alphabethArray[rand() % 15];
+				output += alphabethArray[rand() % (sizeof(alphabethArray)/(sizeof(alphabethArray[0])))];
 			}
 			output += " ";
 		}
