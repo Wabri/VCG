@@ -99,7 +99,8 @@ int main(int argc, char **argv) {
 
 		string output;
 		extractStringOutputFromAlphabeth(&output, alphabethArray,
-				*numberOfElementsInAlphabeth, *numberOfElements, *numberOfCharacters);
+				*numberOfElementsInAlphabeth, *numberOfElements,
+				*numberOfCharacters);
 		cout << "### Output ###" << endl << output << endl;
 		output.~basic_string();
 
@@ -107,6 +108,14 @@ int main(int argc, char **argv) {
 		delete numberOfCharacters;
 		delete[] alphabethArray;
 		delete numberOfElementsInAlphabeth;
+	} else if (argc == 2) {
+		if (string(argv[1]) == "--help") {
+			cout
+					<< "usage: VCG [--version] [--help] "
+					<< endl;
+		} else if (string(argv[1]) == "--version" || string(argv[1]) == "-v") {
+			cout << "VCG version 1.0.1" << endl;
+		}
 	}
 	return 0;
 }
