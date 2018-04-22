@@ -14,5 +14,5 @@ compiler:
 script:
  - ./config ; make -C VCG/
  - ./VCG/gradlew --no-daemon -b VCG/build.gradle mainExecutable
- - ./VCG/bin/VCG 10 2
- - ./VCG/build/exe/main/main 10 2
+ - ./VCG/bin/VCG -v
+ - ./VCG/build/exe/main/main --version
