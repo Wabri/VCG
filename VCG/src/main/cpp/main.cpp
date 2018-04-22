@@ -50,6 +50,17 @@ int extractAlphabethFromString(string hereTheResult[], string *extractThis) {
 	}
 }
 
+void extractStringOutputFromAlphabeth(string *hereTheResult, string alphabeth[],
+		int sizeOfAlphabeth, int numberOfElements, int numberOfCharacters) {
+	srand(time(0));
+	for (int var = 0; var < numberOfElements; ++var) {
+		for (int rip = 0; rip < numberOfCharacters; ++rip) {
+			*hereTheResult += alphabeth[rand() % sizeOfAlphabeth];
+		}
+		*hereTheResult += " ";
+	}
+}
+
 int main(int argc, char **argv) {
 	if (argc == 1) {
 		cout << endl << "### Alphabeth ###" << endl;
@@ -58,12 +69,12 @@ int main(int argc, char **argv) {
 				"Insert the elements of alphabeth separated with comma (example: 1,2,3,A,B)",
 				"Confirm this alphabeth?");
 		string *temp = new string[alphabethString.size()];
-		int numberOfElementsInAlphabeth = 0;
-		numberOfElementsInAlphabeth = extractAlphabethFromString(temp,
+		int *numberOfElementsInAlphabeth = new int;
+		*numberOfElementsInAlphabeth = extractAlphabethFromString(temp,
 				&alphabethString);
 		alphabethString.~basic_string();
-		string alphabethArray[numberOfElementsInAlphabeth];
-		for (int index = 0; index < numberOfElementsInAlphabeth; index++) {
+		string *alphabethArray = new string[*numberOfElementsInAlphabeth];
+		for (int index = 0; index < *numberOfElementsInAlphabeth; index++) {
 			alphabethArray[index] = temp[index];
 		}
 		delete[] temp;
@@ -73,7 +84,8 @@ int main(int argc, char **argv) {
 		stringRequest(&characters,
 				"How many characters must have a single element of output string? (example: 2 characters 1A, 3 characters B3F)",
 				"Confirm this number of characters?");
-		int numberOfCharacters = atoi(characters.c_str());
+		int *numberOfCharacters = new int;
+		*numberOfCharacters = atoi(characters.c_str());
 		characters.~basic_string();
 
 		cout << "### Number of elements ###" << endl;
@@ -81,18 +93,20 @@ int main(int argc, char **argv) {
 		stringRequest(&elements,
 				"How many output elements do you want? (example: 3 elements in output -> AB CD 35, 4 elements in output -> AB CD 35 13)",
 				"Confirm this number of elements in output?");
-		int numberOfElements = atoi(elements.c_str());
+		int *numberOfElements = new int;
+		*numberOfElements = atoi(elements.c_str());
 		elements.~basic_string();
 
-		srand(time(0));
 		string output;
-		for (int var = 0; var < numberOfElements; ++var) {
-			for (int rip = 0; rip < numberOfCharacters; ++rip) {
-				output += alphabethArray[rand() % (sizeof(alphabethArray)/(sizeof(alphabethArray[0])))];
-			}
-			output += " ";
-		}
+		extractStringOutputFromAlphabeth(&output, alphabethArray,
+				*numberOfElementsInAlphabeth, *numberOfElements, *numberOfCharacters);
 		cout << "### Output ###" << endl << output << endl;
+		output.~basic_string();
+
+		delete numberOfElements;
+		delete numberOfCharacters;
+		delete[] alphabethArray;
+		delete numberOfElementsInAlphabeth;
 	}
 	return 0;
 }
