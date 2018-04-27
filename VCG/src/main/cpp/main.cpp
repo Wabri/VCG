@@ -3,6 +3,12 @@
 #include <iostream>
 #include <string>
 
+namespace {
+
+const char* VERSION = "1.0.1";
+
+}
+
 using namespace std;
 
 void stringRequest(string* hereTheResult, string firstInput,
@@ -114,7 +120,7 @@ int main(int argc, char **argv) {
 					<< "usage: VCG [--version] [--help] "
 					<< endl;
 		} else if (string(argv[1]) == "--version" || string(argv[1]) == "-v") {
-			cout << "VCG version 1.0.1" << endl;
+			cout << "VCG version" + VERSION << endl;
 		}
 	}
 	return 0;
