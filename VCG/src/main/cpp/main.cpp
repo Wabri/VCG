@@ -120,7 +120,13 @@ int main(int argc, char **argv) {
 					<< "usage: VCG [--version] [--help] "
 					<< endl;
 		} else if (string(argv[1]) == "--version" || string(argv[1]) == "-v") {
-			cout << "VCG version" + VERSION << endl;
+			cout << "VCG version" + string(VERSION) << endl;
+		} else if (string(argv[1])== "--config" || string(argv[1]) == "-c") {
+			cout << "You have to insert the name of the file:" << endl << " VCG [-c <path>] [--config <path>]" << endl;
+		}
+	} else if (argc == 3) {
+		if (string(argv[1])== "--config" || string(argv[1]) == "-c") {
+			cout << argv[2] << endl;
 		}
 	}
 	return 0;
