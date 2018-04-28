@@ -1,1 +1,1 @@
-rm VCG/bin/VCG ; make -C VCG/ ; rm VCG/bin/*.o
+mkdir VCG/bin ; rm VCG/bin/VCG ; make -C VCG/ ; rm VCG/bin/*.o
