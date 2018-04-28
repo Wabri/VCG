@@ -12,7 +12,7 @@ compiler:
 
 # makefile create executable in bin and gradle in exe/main
 script:
- - ./config ; make -C VCG/
+ - ./config
  - ./VCG/gradlew --no-daemon -b VCG/build.gradle mainExecutable
  - ./VCG/bin/VCG -v
  - ./VCG/build/exe/main/main --version

@@ -1,41 +1,45 @@
 #include <cstdlib>
 #include <ctime>
+#include <fstream>
 #include <iostream>
 #include <string>
 
 namespace {
-
 const char* VERSION = "1.0.1";
-
+const char* NO_CONFIG_FILE = "-no-config-file-";
 }
 
 using namespace std;
 
-void stringRequest(string* hereTheResult, string firstInput,
-		string inputConfirm) {
+bool confirmationRequest(const string& inputConfirm) {
+	cout << "### " + inputConfirm + " (Y: yes, N: no) ###" << endl;
+	cout << " Input: ";
+	string response;
+	cin >> response;
+	while (!((response == "Y") || (response == "y") || (response == "N")
+			|| (response == "n"))) {
+		cout << "### You have to insert Y or N ###" << endl;
+		cout << " Input: ";
+		cin >> response;
+	}
+	if ((response == "Y") || (response == "y")) {
+		cout << "### Confirmed ###" << endl << endl;
+		return true;
+	} else if ((response == "N") || (response == "n")) {
+		cout << "### Not confirmed ###" << endl << endl;
+		return false;
+	}
+	return false;
+}
+
+void stringRequest(string* hereTheResult, const string& firstInput,
+		const string& inputConfirm) {
 	do {
 		cout << "### " + firstInput + " ###" << endl;
 		cout << " Input: ";
 		cin >> *hereTheResult;
-		cout << "### You have insert: " << *hereTheResult << " ###" << endl
-				<< "### " + inputConfirm + " (Y: yes, N: no) ###" << endl;
-		cout << " Input: ";
-		string response;
-		cin >> response;
-		while (!((response == "Y") || (response == "y") || (response == "N")
-				|| (response == "n"))) {
-			cout << "### You have to insert Y or N ###" << endl;
-			cout << " Input: ";
-			cin >> response;
-		}
-		if ((response == "Y") || (response == "y")) {
-			cout << "### Confirmed ###" << endl << endl;
-			response.~basic_string();
-			break;
-		} else if ((response == "N") || (response == "n")) {
-			cout << "### Not confirmed ###" << endl << endl;
-		}
-	} while (true);
+		cout << "### You have insert: " << *hereTheResult << " ###" << endl;
+	} while (!confirmationRequest(inputConfirm));
 }
 
 int extractAlphabethFromString(string hereTheResult[], string *extractThis) {
@@ -67,42 +71,63 @@ void extractStringOutputFromAlphabeth(string *hereTheResult, string alphabeth[],
 	}
 }
 
-int main(int argc, char **argv) {
-	if (argc == 1) {
-		cout << endl << "### Alphabeth ###" << endl;
-		string alphabethString;
-		stringRequest(&alphabethString,
-				"Insert the elements of alphabeth separated with comma (example: 1,2,3,A,B)",
-				"Confirm this alphabeth?");
-		string *temp = new string[alphabethString.size()];
-		int *numberOfElementsInAlphabeth = new int;
-		*numberOfElementsInAlphabeth = extractAlphabethFromString(temp,
-				&alphabethString);
-		alphabethString.~basic_string();
-		string *alphabethArray = new string[*numberOfElementsInAlphabeth];
-		for (int index = 0; index < *numberOfElementsInAlphabeth; index++) {
-			alphabethArray[index] = temp[index];
-		}
-		delete[] temp;
+int* extractNumberOfOutputElements() {
+	cout << "### Number of elements ###" << endl;
+	string elements;
+	stringRequest(&elements,
+			"How many output elements do you want? (example: 3 elements in output -> AB CD 35, 4 elements in output -> AB CD 35 13)",
+			"Confirm this number of elements in output?");
+	int* numberOfElements = new int;
+	*numberOfElements = atoi(elements.c_str());
+	elements.~basic_string();
+	return numberOfElements;
+}
 
-		cout << "### Number of characters ###" << endl;
-		string characters;
-		stringRequest(&characters,
-				"How many characters must have a single element of output string? (example: 2 characters 1A, 3 characters B3F)",
-				"Confirm this number of characters?");
-		int *numberOfCharacters = new int;
-		*numberOfCharacters = atoi(characters.c_str());
-		characters.~basic_string();
+int* extractNumberOfCharactersOfSingleElement() {
+	cout << "### Number of characters ###" << endl;
+	string characters;
+	stringRequest(&characters,
+			"How many characters must have a single element of output string? (example: 2 characters 1A, 3 characters B3F)",
+			"Confirm this number of characters?");
+	int* numberOfCharacters = new int;
+	*numberOfCharacters = atoi(characters.c_str());
+	characters.~basic_string();
+	return numberOfCharacters;
+}
 
-		cout << "### Number of elements ###" << endl;
-		string elements;
-		stringRequest(&elements,
-				"How many output elements do you want? (example: 3 elements in output -> AB CD 35, 4 elements in output -> AB CD 35 13)",
-				"Confirm this number of elements in output?");
-		int *numberOfElements = new int;
-		*numberOfElements = atoi(elements.c_str());
-		elements.~basic_string();
+string* extractArrayAlphabeth(int* numberOfElementsInAlphabeth,
+		string* temporaryAlphabeth) {
+	string* alphabethArray = new string[*numberOfElementsInAlphabeth];
+	for (int index = 0; index < *numberOfElementsInAlphabeth; index++) {
+		alphabethArray[index] = temporaryAlphabeth[index];
+	}
 
+	return alphabethArray;
+}
+
+int* extractAlphabeth(string*& alphabethArray) {
+	cout << endl << "### Alphabeth ###" << endl;
+	string alphabethString;
+	stringRequest(&alphabethString,
+			"Insert the elements of alphabeth separated with comma (example: 1,2,3,A,B)",
+			"Confirm this alphabeth?");
+	string* cleanAlphabethString = new string[alphabethString.size()];
+	int* numberOfElementsInAlphabeth = new int;
+	*numberOfElementsInAlphabeth = extractAlphabethFromString(
+			cleanAlphabethString, &alphabethString);
+	alphabethString.~basic_string();
+	alphabethArray = extractArrayAlphabeth(numberOfElementsInAlphabeth,
+			cleanAlphabethString);
+	delete[] cleanAlphabethString;
+	return numberOfElementsInAlphabeth;
+}
+
+void mainRequest(const string& configFileName) {
+	string* alphabethArray;
+	int* numberOfElementsInAlphabeth = extractAlphabeth(alphabethArray);
+	int* numberOfCharacters = extractNumberOfCharactersOfSingleElement();
+	int* numberOfElements = extractNumberOfOutputElements();
+	if (string(configFileName) == NO_CONFIG_FILE) {
 		string output;
 		extractStringOutputFromAlphabeth(&output, alphabethArray,
 				*numberOfElementsInAlphabeth, *numberOfElements,
@@ -114,19 +139,37 @@ int main(int argc, char **argv) {
 		delete numberOfCharacters;
 		delete[] alphabethArray;
 		delete numberOfElementsInAlphabeth;
+	}
+}
+
+int main(int argc, char **argv) {
+	if (argc == 1) {
+		mainRequest(NO_CONFIG_FILE);
 	} else if (argc == 2) {
 		if (string(argv[1]) == "--help") {
-			cout
-					<< "usage: VCG [--version] [--help] "
-					<< endl;
+			cout << "usage: VCG [--version] [--help] " << endl;
 		} else if (string(argv[1]) == "--version" || string(argv[1]) == "-v") {
 			cout << "VCG version" + string(VERSION) << endl;
-		} else if (string(argv[1])== "--config" || string(argv[1]) == "-c") {
-			cout << "You have to insert the name of the file:" << endl << " VCG [-c <path>] [--config <path>]" << endl;
+		} else if (string(argv[1]) == "--config" || string(argv[1]) == "-c") {
+			cout << "You have to insert the name of the file:" << endl
+					<< " VCG [-c <path>] [--config <path>]" << endl;
 		}
 	} else if (argc == 3) {
-		if (string(argv[1])== "--config" || string(argv[1]) == "-c") {
-			cout << argv[2] << endl;
+		ifstream configFile;
+		if (string(argv[1]) == "--config" || string(argv[1]) == "-c") {
+			cout << "Try open file: " << argv[2] << endl;
+			configFile.open(argv[2]);
+			if (configFile.is_open()) {
+				cout << "Successfully open" << endl;
+			} else {
+				cout << "Unsuccessfully open" << endl;
+				if (confirmationRequest(
+						"Do you want to create new configuration file?")) {
+					mainRequest(argv[2]);
+					return 0;
+				}
+			}
+			configFile.close();
 		}
 	}
 	return 0;
