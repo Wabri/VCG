@@ -11,18 +11,27 @@ const char* NO_CONFIG_FILE = "-no-config-file-";
 
 using namespace std;
 
+bool responseIsYesOrNot(const string& response) {
+	return ((response == "ye") || (response == "Ye") || (response == "yE")
+			|| (response == "YE") || (response == "yES") || (response == "YeS")
+			|| (response == "yeS") || (response == "yEs") || (response == "yes")
+			|| (response == "YES") || (response == "YEs") || (response == "Yes")
+			|| (response == "Y") || (response == "y") || (response == "N")
+			|| (response == "n") || (response == "no") || (response == "nO")
+			|| (response == "No") || (response == "NO"));
+}
+
 bool confirmationRequest(const string& inputConfirm) {
 	cout << "### " + inputConfirm + " (Y: yes, N: no) ###" << endl;
 	cout << " Input: ";
 	string response;
 	cin >> response;
-	while (!((response == "Y") || (response == "y") || (response == "N")
-			|| (response == "n"))) {
+	while (!responseIsYesOrNot(response)) {
 		cout << "### You have to insert Y or N ###" << endl;
 		cout << " Input: ";
 		cin >> response;
 	}
-	if ((response == "Y") || (response == "y")) {
+	if (responseIsYesOrNot(response)) {
 		cout << "### Confirmed ###" << endl << endl;
 		return true;
 	} else if ((response == "N") || (response == "n")) {
@@ -71,7 +80,7 @@ void extractStringOutputFromAlphabeth(string *hereTheResult, string alphabeth[],
 	}
 }
 
-int* extractNumberOfOutputElements() {
+int* extractNumberOfOutputElementsFromTerminal() {
 	cout << "### Number of elements ###" << endl;
 	string elements;
 	stringRequest(&elements,
@@ -83,7 +92,7 @@ int* extractNumberOfOutputElements() {
 	return numberOfElements;
 }
 
-int* extractNumberOfCharactersOfSingleElement() {
+int* extractNumberOfCharactersOfSingleElementFromTerminal() {
 	cout << "### Number of characters ###" << endl;
 	string characters;
 	stringRequest(&characters,
@@ -105,7 +114,7 @@ string* extractArrayAlphabeth(int* numberOfElementsInAlphabeth,
 	return alphabethArray;
 }
 
-int* extractAlphabeth(string*& alphabethArray) {
+int* extractAlphabethFromTerminal(string*& alphabethArray) {
 	cout << endl << "### Alphabeth ###" << endl;
 	string alphabethString;
 	stringRequest(&alphabethString,
@@ -123,18 +132,17 @@ int* extractAlphabeth(string*& alphabethArray) {
 }
 
 void mainRequest(const string& configFileName) {
-	string* alphabethArray;
-	int* numberOfElementsInAlphabeth = extractAlphabeth(alphabethArray);
-	int* numberOfCharacters = extractNumberOfCharactersOfSingleElement();
-	int* numberOfElements = extractNumberOfOutputElements();
 	if (string(configFileName) == NO_CONFIG_FILE) {
+		string* alphabethArray;
+		int* numberOfElementsInAlphabeth = extractAlphabethFromTerminal(alphabethArray);
+		int* numberOfCharacters = extractNumberOfCharactersOfSingleElementFromTerminal();
+		int* numberOfElements = extractNumberOfOutputElementsFromTerminal();
 		string output;
 		extractStringOutputFromAlphabeth(&output, alphabethArray,
 				*numberOfElementsInAlphabeth, *numberOfElements,
 				*numberOfCharacters);
 		cout << "### Output ###" << endl << output << endl;
 		output.~basic_string();
-
 		delete numberOfElements;
 		delete numberOfCharacters;
 		delete[] alphabethArray;
