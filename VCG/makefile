@@ -1,6 +1,6 @@
 CC=clang++
 RM=rm -f 
-LIBS=-liostream -lctime -lcstdlib -lstring
+LIBS=-liostream -lctime -lcstdlib -lstring -lfstream
 
 VCG: bin/main.o
 	$(CC) -o bin/VCG bin/main.o
